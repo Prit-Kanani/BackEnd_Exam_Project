@@ -1,0 +1,20 @@
+﻿namespace Backend_Exam_Project.DTOs;
+
+public class OperationResultDTO
+{
+    public int Id { get; set; }
+    public int RowsAffected { get; set; }
+}
+
+public class ListResult<T> where T : class
+{
+    public int TotalCount { get; set; }
+    public List<T> Items { get; set; } = new List<T>();
+}
+public class JwtSettings
+{
+    public string SecretKey { get; set; }
+    public string Issuer { get; set; }
+    public string Audience { get; set; }
+    public int ExpiryMinutes { get; set; }
+}
