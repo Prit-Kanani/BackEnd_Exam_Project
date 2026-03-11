@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Supabase;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,6 +37,21 @@ builder.Services.AddSwaggerGen();
 #region Database Configuration
 builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("myConnectionString")));
+#endregion
+
+#region Supabase Configuration
+var supabaseSettings = builder.Configuration.GetSection("Supabase").Get<SupabaseSettings>();
+var supabaseClient = new Client(
+    supabaseSettings.Url,
+    supabaseSettings.Key,
+    new SupabaseOptions
+    {
+        AutoConnectRealtime = false,
+        AutoRefreshToken = false
+    });
+
+await supabaseClient.InitializeAsync();
+builder.Services.AddSingleton(supabaseClient);
 #endregion
 
 #region Validation

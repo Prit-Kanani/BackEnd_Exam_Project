@@ -18,3 +18,10 @@ public class JwtSettings
     public string Audience { get; set; }
     public int ExpiryMinutes { get; set; }
 }
+
+public class SupabaseSettings
+{
+    public string Url { get; set; }
+    public string Key { get; set; }
+    public string Bucket { get; set; }
+}
