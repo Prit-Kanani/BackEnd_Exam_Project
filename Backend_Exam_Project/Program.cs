@@ -10,6 +10,7 @@ using Backend_Exam_Project.Services.Auth;
 using Backend_Exam_Project.Services.Role;
 using Backend_Exam_Project.Services.Ticket;
 using Backend_Exam_Project.Services.User;
+using Backend_Exam_Project.Utilities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -17,6 +18,10 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+var envFilePath = Path.Combine(builder.Environment.ContentRootPath, ".env");
+var envConfiguration = DotEnvConfiguration.Load(envFilePath);
+
+builder.Configuration.AddInMemoryCollection(envConfiguration);
 
 // Add services to the container.
 
