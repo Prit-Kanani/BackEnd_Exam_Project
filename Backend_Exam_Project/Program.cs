@@ -32,7 +32,6 @@ builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 #endregion
 
@@ -152,7 +151,7 @@ app.UseSwaggerUI(
     options =>
     {
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "User Service API v1");
-        options.RoutePrefix = string.Empty; // Set Swagger UI at the app's root
+        options.RoutePrefix = "swagger";
     }    
 );
 

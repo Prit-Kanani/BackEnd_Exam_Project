@@ -13,10 +13,11 @@ public class FileController(
 ) : ControllerBase
 {
     [HttpPost("upload")]
+    [Consumes("multipart/form-data")]
     [Produces<UploadFileResultDTO>]
-    public async Task<IActionResult> Upload([FromForm] IFormFile file)
+    public async Task<IActionResult> Upload([FromForm] UploadFileRequestDTO request)
     {
-        var response = await fileService.UploadFile(file);
+        var response = await fileService.UploadFile(request.File);
         return Ok(response);
     }
 }
