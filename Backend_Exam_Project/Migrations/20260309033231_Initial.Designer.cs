@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend_Exam_Project.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260224041647_AddedConstrains")]
-    partial class AddedConstrains
+    [Migration("20260309033231_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -158,6 +158,8 @@ namespace Backend_Exam_Project.Migrations
 
                     b.HasKey("TicketID");
 
+                    b.HasIndex("AssignedTo");
+
                     b.HasIndex("CreatedBy");
 
                     b.ToTable("Tickets", t =>
@@ -239,13 +241,21 @@ namespace Backend_Exam_Project.Migrations
 
             modelBuilder.Entity("Backend_Exam_Project.Models.Tickets", b =>
                 {
-                    b.HasOne("Backend_Exam_Project.Models.Users", "Users")
+                    b.HasOne("Backend_Exam_Project.Models.Users", "AssignedUser")
+                        .WithMany()
+                        .HasForeignKey("AssignedTo")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Backend_Exam_Project.Models.Users", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedBy")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Users");
+                    b.Navigation("AssignedUser");
+
+                    b.Navigation("CreatedByUser");
                 });
 
             modelBuilder.Entity("Backend_Exam_Project.Models.Users", b =>

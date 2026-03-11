@@ -120,12 +120,21 @@ builder.Services.AddAuthentication(options =>
 #region Application Middleware
 var app = builder.Build();
 
+app.UseSwagger();
+app.UseSwaggerUI(
+    options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "User Service API v1");
+        options.RoutePrefix = string.Empty; // Set Swagger UI at the app's root
+    }    
+);
+
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
 
 app.UseHttpsRedirection();
 

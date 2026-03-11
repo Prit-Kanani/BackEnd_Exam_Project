@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Backend_Exam_Project.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,6 +22,7 @@ namespace Backend_Exam_Project.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Roles", x => x.RoleID);
+                    table.CheckConstraint("CK_Roles_RoleName", "RoleName IN ('Manager','Support','User')");
                 });
 
             migrationBuilder.CreateTable(
@@ -30,9 +31,9 @@ namespace Backend_Exam_Project.Migrations
                 {
                     UserID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(555)", maxLength: 555, nullable: false),
                     RoleID = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -43,8 +44,7 @@ namespace Backend_Exam_Project.Migrations
                         name: "FK_Users_Roles_RoleID",
                         column: x => x.RoleID,
                         principalTable: "Roles",
-                        principalColumn: "RoleID",
-                        onDelete: ReferentialAction.NoAction);
+                        principalColumn: "RoleID");
                 });
 
             migrationBuilder.CreateTable(
@@ -53,10 +53,10 @@ namespace Backend_Exam_Project.Migrations
                 {
                     TicketID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Priority = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false, defaultValue: "Open"),
+                    Priority = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false, defaultValue: "Medium"),
                     AssignedTo = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedBy = table.Column<int>(type: "int", nullable: false)
@@ -64,12 +64,18 @@ namespace Backend_Exam_Project.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tickets", x => x.TicketID);
+                    table.CheckConstraint("CK_Tickets_Priority", "Priority IN ('Low','Medium','High')");
+                    table.CheckConstraint("CK_Tickets_Status", "Status IN ('Open','In Progress','Resolved', 'Closed')");
+                    table.ForeignKey(
+                        name: "FK_Tickets_Users_AssignedTo",
+                        column: x => x.AssignedTo,
+                        principalTable: "Users",
+                        principalColumn: "UserID");
                     table.ForeignKey(
                         name: "FK_Tickets_Users_CreatedBy",
                         column: x => x.CreatedBy,
                         principalTable: "Users",
-                        principalColumn: "UserID",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "UserID");
                 });
 
             migrationBuilder.CreateTable(
@@ -87,12 +93,13 @@ namespace Backend_Exam_Project.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TicketStatusLogs", x => x.TicketStatusLogID);
+                    table.CheckConstraint("CK_TicketStatusLogs_NewStatus", "NewStatus IN ('Open','In Progress','Resolved', 'Closed')");
+                    table.CheckConstraint("CK_TicketStatusLogs_OldStatus", "OldStatus IN ('Open','In Progress','Resolved', 'Closed')");
                     table.ForeignKey(
                         name: "FK_TicketStatusLogs_Users_ChangedByID",
                         column: x => x.ChangedByID,
                         principalTable: "Users",
-                        principalColumn: "UserID",
-                        onDelete: ReferentialAction.NoAction);
+                        principalColumn: "UserID");
                 });
 
             migrationBuilder.CreateTable(
@@ -114,13 +121,12 @@ namespace Backend_Exam_Project.Migrations
                         column: x => x.TicktID,
                         principalTable: "Tickets",
                         principalColumn: "TicketID",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_TicketComments_Users_CommentedByID",
                         column: x => x.CommentedByID,
                         principalTable: "Users",
-                        principalColumn: "UserID",
-                        onDelete: ReferentialAction.NoAction);
+                        principalColumn: "UserID");
                 });
 
             migrationBuilder.CreateIndex(
@@ -138,6 +144,11 @@ namespace Backend_Exam_Project.Migrations
                 name: "IX_TicketComments_TicktID",
                 table: "TicketComments",
                 column: "TicktID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tickets_AssignedTo",
+                table: "Tickets",
+                column: "AssignedTo");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tickets_CreatedBy",
