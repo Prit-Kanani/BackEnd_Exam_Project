@@ -14,7 +14,8 @@ public class AuthService(
 ) : IAuthService
 {
     #region CONFIGURATION]
-    private readonly JwtSettings _jwtSettings = configuration.GetSection("Jwt").Get<JwtSettings>();
+    private readonly JwtSettings _jwtSettings = configuration.GetSection("Jwt").Get<JwtSettings>()
+        ?? throw new InvalidOperationException("JWT configuration is missing.");
     #endregion CONFIGURATION
 
     #region LOGIN
@@ -70,7 +71,8 @@ public class AuthService(
     #region USER INFO
     private async Task<UserInfoDTO> UserInfo(string Email)
     {
-        var response = await authRepository.UserInfo(Email);
+        var response = await authRepository.UserInfo(Email)
+            ?? throw new UnauthorizedAccessException("Invalid credentials");
         return response;
     }
     #endregion

@@ -13,15 +13,15 @@ public class ListResult<T> where T : class
 }
 public class JwtSettings
 {
-    public string SecretKey { get; set; }
-    public string Issuer { get; set; }
-    public string Audience { get; set; }
+    public string SecretKey { get; set; } = string.Empty;
+    public string Issuer { get; set; } = string.Empty;
+    public string Audience { get; set; } = string.Empty;
     public int ExpiryMinutes { get; set; }
 }
 
 public class SupabaseSettings
 {
-    public string Url { get; set; }
-    public string Key { get; set; }
-    public string Bucket { get; set; }
+    public string Url { get; set; } = string.Empty;
+    public string Key { get; set; } = string.Empty;
+    public string Bucket { get; set; } = string.Empty;
 }

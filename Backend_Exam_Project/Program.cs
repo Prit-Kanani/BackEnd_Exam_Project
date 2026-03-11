@@ -7,6 +7,7 @@ using Backend_Exam_Project.Repository.Role;
 using Backend_Exam_Project.Repository.Ticket;
 using Backend_Exam_Project.Repository.User;
 using Backend_Exam_Project.Services.Auth;
+using Backend_Exam_Project.Services.File;
 using Backend_Exam_Project.Services.Role;
 using Backend_Exam_Project.Services.Ticket;
 using Backend_Exam_Project.Services.User;
@@ -28,6 +29,7 @@ builder.Configuration.AddInMemoryCollection(envConfiguration);
 
 #region other configurations
 builder.Services.AddControllers();
+builder.Services.AddHttpContextAccessor();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -40,7 +42,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 #endregion
 
 #region Supabase Configuration
-var supabaseSettings = builder.Configuration.GetSection("Supabase").Get<SupabaseSettings>();
+var supabaseSettings = builder.Configuration.GetSection("Supabase").Get<SupabaseSettings>()
+    ?? throw new InvalidOperationException("Supabase configuration is missing.");
 var supabaseClient = new Client(
     supabaseSettings.Url,
     supabaseSettings.Key,
@@ -75,6 +78,8 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 builder.Services.AddScoped<ITicketService, TicketService>();
+
+builder.Services.AddScoped<IFileService, FileService>();
 
 #endregion
 
@@ -114,7 +119,8 @@ builder.Services.AddSwaggerGen(options =>
 
 #region JWT Authentication
 
-var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>();
+var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>()
+    ?? throw new InvalidOperationException("JWT configuration is missing.");
 var key = Encoding.UTF8.GetBytes(jwtSettings.SecretKey);
 
 builder.Services.AddAuthentication(options =>

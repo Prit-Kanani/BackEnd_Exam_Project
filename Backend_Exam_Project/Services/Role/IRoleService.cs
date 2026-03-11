@@ -6,4 +6,5 @@ public interface IRoleService
 {
     Task<OperationResultDTO> CreateRole(string RoleName);
     Task<int> RoleIDByRoleName(string roleName);
+    Task<List<ListRoleDTO>> SelectRoles();
 }

@@ -1,4 +1,4 @@
-﻿using Backend_Exam_Project.Data;
+using Backend_Exam_Project.Data;
 using Backend_Exam_Project.DTOs;
 using Backend_Exam_Project.Models;
 using Mapster;
@@ -15,18 +15,17 @@ public class UserRepository(
         var user = dto.Adapt<Users>();
         await contex.User.AddAsync(user);
         var rows = await contex.SaveChangesAsync();
-        var response = new OperationResultDTO { Id = user.UserID, RowsAffected = rows };
-        return response;
+        return new OperationResultDTO { Id = user.UserID, RowsAffected = rows };
     }
+
     public async Task<List<ListUsersDTO>> SelectUsers(int skip, int take)
     {
-       var users = await contex.User.Include(r => r.Roles)
+        var users = await contex.User.Include(r => r.Roles)
             .Skip(skip)
             .Take(take)
             .ToListAsync();
 
-        // Map each Users -> ListUsersDTO along with the nested Role object
-        var response = users.Select(u => new ListUsersDTO
+        return users.Select(u => new ListUsersDTO
         {
             UserID = u.UserID,
             UserName = u.UserName,
@@ -35,10 +34,13 @@ public class UserRepository(
             Role = new UserRole
             {
                 RoleID = u.Roles.RoleID,
-                RoleName = u.Roles.RoleName.ToString()
+                RoleName = u.Roles.RoleName
             }
         }).ToList();
+    }
 
-        return response;
+    public async Task<bool> UserExists(int userId)
+    {
+        return await contex.User.AnyAsync(user => user.UserID == userId);
     }
 }

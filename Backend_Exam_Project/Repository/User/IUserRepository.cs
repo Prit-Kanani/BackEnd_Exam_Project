@@ -6,4 +6,5 @@ public interface IUserRepository
 {
     Task<OperationResultDTO> CreateUser(CreateUserDTO dto);
     Task<List<ListUsersDTO>> SelectUsers(int skip, int take);
+    Task<bool> UserExists(int userId);
 }

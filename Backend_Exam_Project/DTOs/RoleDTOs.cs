@@ -1,5 +1,12 @@
 ﻿namespace Backend_Exam_Project.DTOs;
 
-public class RoleDTOs
+public class CreateRoleDTO
 {
+    public string RoleName { get; set; } = string.Empty;
+}
+
+public class ListRoleDTO
+{
+    public int RoleID { get; set; }
+    public string RoleName { get; set; } = string.Empty;
 }
